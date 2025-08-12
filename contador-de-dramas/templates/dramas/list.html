@@ -1,0 +1,41 @@
+
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h3>Dramas</h3>
+  <a href="{{ url_for('dramas_create') }}" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Registrar</a>
+</div>
+<form class="row g-2 mb-3">
+  <div class="col-md-6"><input class="form-control" type="search" name="q" value="{{ q }}" placeholder="Buscar por drama ou descrição"></div>
+  <div class="col-md-4">
+    <select class="form-select" name="user_id">
+      <option value="">— Filtrar por usuário —</option>
+      {% for u in users %}
+        <option value="{{ u.id }}" {% if uid|int == u.id %}selected{% endif %}>@{{ u.nickname }} — {{ u.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-2"><button class="btn btn-outline-secondary w-100" type="submit"><i class="bi bi-filter"></i> Filtrar</button></div>
+</form>
+<div class="list-group">
+  {% for d in dramas %}
+  <div class="list-group-item list-group-item-action">
+    <div class="d-flex w-100 justify-content-between">
+      <div>
+        <h5 class="mb-1">{{ d.title }} <span class="badge bg-danger-subtle text-danger">{{ d.intensity }}/10 {{ d.intensity|emoji }}</span></h5>
+        <small class="text-muted">Por: {{ d.author.nickname if d.author else 'n/a' }} • {{ d.created_at.strftime('%d/%m/%Y %H:%M') }}</small>
+      </div>
+      <div class="ms-3">
+        <a class="btn btn-sm btn-outline-primary" href="{{ url_for('dramas_edit', drama_id=d.id) }}"><i class="bi bi-pencil"></i></a>
+        <form action="{{ url_for('dramas_delete', drama_id=d.id) }}" method="post" class="d-inline" onsubmit="return confirm('Excluir este drama?');">
+          <button class="btn btn-sm btn-outline-danger" type="submit"><i class="bi bi-trash"></i></button>
+        </form>
+      </div>
+    </div>
+    <p class="mb-1 text-muted">{{ d.description }}</p>
+  </div>
+  {% else %}
+    <div class="text-muted">Sem dramas ainda. Aproveite a calmaria 😌</div>
+  {% endfor %}
+</div>
+{% endblock %}

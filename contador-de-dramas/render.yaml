@@ -1,0 +1,14 @@
+
+services:
+  - type: web
+    name: contador-de-dramas
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app --workers=2 --threads=4 --timeout=120 --bind 0.0.0.0:$PORT
+    plan: free
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      # Opcional: aponte para um Postgres gerenciado (Render, Neon, Supabase)
+      # - key: DATABASE_URL
+      #   value: postgresql://usuario:senha@host:5432/dbname
